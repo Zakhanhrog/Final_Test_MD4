@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý sản phẩm</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <h1 class="mb-4">Quản lý sản phẩm</h1>
+  
+  <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+  <!-- FORM TÌM KIẾM -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Tìm kiếm sản phẩm</h5>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/product}" method="get">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label for="nameSearch" class="form-label">Tên sản phẩm:</label>
+            <input type="text" class="form-control" id="nameSearch" name="nameSearch" th:value="${nameSearch}">
+          </div>
+          <div class="col-md-3">
+            <label for="priceSearch" class="form-label">Giá bắt đầu:</label>
+            <input type="number" class="form-control" id="priceSearch" name="priceSearch" th:value="${priceSearch}">
+          </div>
+          <div class="col-md-3">
+            <label for="typeSearch" class="form-label">Loại sản phẩm:</label>
+            <select class="form-select" id="typeSearch" name="typeSearch">
+              <option value="">--Chọn--</option>
+              <option th:each="pt : ${productTypes}"
+                      th:value="${pt.id}"
+                      th:text="${pt.name}"
+                      th:selected="${pt.id == typeSearch}"></option>
+            </select>
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <form th:action="@{/product/delete}" method="post">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <a th:href="@{/product/create}" class="btn btn-success">Thêm sản phẩm</a>
+        <button type="submit" class="btn btn-danger ms-2" onclick="return confirm('Bạn có chắc chắn muốn xóa các sản phẩm đã chọn?');">
+          Xóa các sản phẩm đã chọn
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="table-light">
+        <tr>
+          <th>Chọn</th>
+          <th>STT</th>
+          <th>Tên sản phẩm</th>
+          <th>Giá khởi điểm</th>
+          <th>Loại sản phẩm</th>
+          <th>Tình Trạng</th>
+          <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${products.empty}">
+          <td colspan="7" class="text-center">Không tìm thấy sản phẩm nào</td>
+        </tr>
+        <tr th:each="product, status : ${products.content}">
+          <td><input type="checkbox" class="form-check-input" name="productIds" th:value="${product.id}"></td>
+          <td th:text="${products.number * products.size + status.count}"></td>
+          <td th:text="${product.name}"></td>
+          <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+          <td th:text="${product.productType != null ? product.productType.name : 'N/A'}"></td>
+          <td th:text="${product.status}"></td>
+          <td>
+            <a th:href="@{/product/{id}/edit(id=${product.id})}" class="btn btn-sm btn-outline-primary">Sửa</a>
+            <a th:href="@{/product/{id}/delete(id=${product.id})}" class="btn btn-sm btn-outline-danger ms-1"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+
+  <nav th:if="${products.totalPages > 1}" aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${!products.hasPrevious()} ? 'disabled'">
+        <a class="page-link" 
+           th:href="@{/product(page=${products.number - 1}, nameSearch=${nameSearch}, priceSearch=${priceSearch}, typeSearch=${typeSearch})}"
+           th:if="${products.hasPrevious()}">Trước</a>
+        <span class="page-link" th:unless="${products.hasPrevious()}">Trước</span>
+      </li>
+
+      <th:block th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}">
+        <li class="page-item" th:classappend="${i == products.number} ? 'active'">
+          <a class="page-link"
+             th:if="${i != products.number}"
+             th:href="@{/product(page=${i}, nameSearch=${nameSearch}, priceSearch=${priceSearch}, typeSearch=${typeSearch})}"
+             th:text="${i + 1}"></a>
+          <span class="page-link" th:if="${i == products.number}" th:text="${i + 1}"></span>
+        </li>
+      </th:block>
+
+      <li class="page-item" th:classappend="${!products.hasNext()} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/product(page=${products.number + 1}, nameSearch=${nameSearch}, priceSearch=${priceSearch}, typeSearch=${typeSearch})}"
+           th:if="${products.hasNext()}">Sau</a>
+        <span class="page-link" th:unless="${products.hasNext()}">Sau</span>
+      </li>
+    </ul>
+  </nav>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
