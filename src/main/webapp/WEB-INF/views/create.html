@@ -14,7 +14,10 @@
           <h2 class="mb-0">Thêm sản phẩm mới</h2>
         </div>
         <div class="card-body">
-          <p><a th:href="@{/product}" class="btn btn-secondary mb-3">← Quay lại danh sách sản phẩm</a></p>
+          <div class="mb-3">
+            <a th:href="@{/}" class="btn btn-outline-secondary me-2">Trang chủ</a>
+            <a th:href="@{/product}" class="btn btn-secondary">← Quay lại danh sách sản phẩm</a>
+          </div>
 
           <form th:action="@{/product/create}" method="post" th:object="${product}">
             <div class="mb-3">

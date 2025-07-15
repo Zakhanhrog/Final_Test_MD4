@@ -21,6 +21,7 @@
 
           <form th:action="@{/product/delete}" method="post" class="d-inline">
             <input type="hidden" name="id" th:value="${product.id}">
+            <a th:href="@{/}" class="btn btn-outline-secondary me-2">🏠 Trang chủ</a>
             <button type="submit" class="btn btn-danger me-2">Xóa</button>
             <a th:href="@{/product}" class="btn btn-secondary">Hủy</a>
           </form>

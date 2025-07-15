@@ -7,7 +7,10 @@
 </head>
 <body>
 <div class="container mt-4">
-  <h1 class="mb-4">Quản lý sản phẩm</h1>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Quản lý sản phẩm</h1>
+    <a th:href="@{/}" class="btn btn-outline-primary">Trang chủ</a>
+  </div>
   
   <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
